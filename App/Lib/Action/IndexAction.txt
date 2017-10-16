@@ -1,0 +1,299 @@
+<?php
+// 本类由系统自动生成，仅供测试用途
+class IndexAction extends Action {
+    public function index(){
+    	
+    	//获得参数signature nonce token timestamp echostr
+        $nonce     =    $_GET['nonce'];
+        $token     =    'weixin';
+        $timestamp =    $_GET['timestamp'];
+        $echostr   =    $_GET['echostr'];
+        $signature =    $_GET['signature'];
+        //形成数组，然后按字典序排序
+        $array=array();
+        $array= array($nonce,$token,$timestamp);
+        sort($array);
+        //拼接成字符串，然后与signature进行校验
+        $str=sha1(implode($array));
+        if ($str==$signature&&$echostr) {
+        	echo $echostr;
+        	exit;
+        }else{
+        	$this->reponseMsg();
+        }
+    }
+    //接收事件推送并回复
+    public function reponseMsg(){
+    	//获取到微信推送过来的post数据(xml格式)
+    	$postArr = $GLOBALS['HTTP_RAW_POST_DATA'];
+    	$tmpStr  =$postArr;
+    	//处理消息类型，并设置回复类型和内容
+/*    	<xml><ToUserName><![CDATA[toUser]]></ToUserName>
+		<FromUserName><![CDATA[FromUser]]></FromUserName>
+		<CreateTime>123456789</CreateTime>
+		<MsgType><![CDATA[event]]></MsgType>
+		<Event><![CDATA[subscribe]]></Event>
+		<EventKey><![CDATA[qrscene_123123]]></EventKey>
+		<Ticket><![CDATA[TICKET]]></Ticket>
+		</xml>*/
+		$postObj = simplexml_load_string($postArr);
+/*		$postObj->ToUserName = '';
+		$postObj->FromUserName = '';
+		$postObj->CreateTime = '';
+		$postObj->MsgType = '';
+		$postObj->Event = '';*/
+		//判断该数据包是否是订阅的事件推送
+		if (strtolower($postObj->MsgType)=='event') {
+			//如果是关注subscribe事件
+			if (strtolower($postObj->Event)=='subscribe') {
+				$arr =array(
+					array(
+						  'title' => '金众电子欢迎您', 
+						  'description' => "点我进入金众电子官网",
+						  'picUrl' => 'http://pic.90sjimg.com/back_pic/u/00/01/53/12/55ecfb7a16ade.jpg',
+						  'url' => 'http://www.dgjinzhong.com',
+						  		),
+						 );
+				$indexModel=new IndexModel;
+				$indexModel->responseMsg($postObj,$arr);
+			}
+		}
+
+
+
+
+		//回复文本消息action
+
+/*		if (strtolower($postObj->MsgType)=='text') {
+			switch (trim($postObj->Content)) {//trim()的作用是去除接收的数据中的空格
+				case 1:
+				$content="你输入的是1";
+				break;
+				
+				case 2:
+				$content="你输入的是2";
+				break;
+
+				case 3:
+				$content="你输入的是3";
+				break;
+
+				case 4:
+				$content="<a href='http://www.dgjinzhong.com'>电我进入金众电子官网</a>";
+				break;
+
+			}
+			//if ($postObj->Content=='hello') {
+				$template=" <xml>
+							<ToUserName><![CDATA[%s]]></ToUserName>
+							<FromUserName><![CDATA[%s]]></FromUserName>
+							<CreateTime>%s</CreateTime>
+							<MsgType><![CDATA[%s]]></MsgType>
+							<Content><![CDATA[%s]]></Content>
+							</xml>";
+				$fromUser=$postObj->ToUserName;
+				$toUser=$postObj->FromUserName;
+				$time=time();
+				$msgType='text';
+				//$content="金众 is very good";
+				echo sprintf($template,$toUser,$fromUser,$time,$msgType,$content);
+			//}
+		}*/
+
+		//回复文本消息end
+
+
+//回复单图文
+
+/*<xml>
+<ToUserName><![CDATA[toUser]]></ToUserName>
+<FromUserName><![CDATA[fromUser]]></FromUserName>
+<CreateTime>12345678</CreateTime>
+<MsgType><![CDATA[news]]></MsgType>
+<ArticleCount>2</ArticleCount>
+<Articles>
+<item>
+<Title><![CDATA[title1]]></Title> 
+<Description><![CDATA[description1]]></Description>
+<PicUrl><![CDATA[picurl]]></PicUrl>
+<Url><![CDATA[url]]></Url>
+</item>
+<item>
+<Title><![CDATA[title]]></Title>
+<Description><![CDATA[description]]></Description>
+<PicUrl><![CDATA[picurl]]></PicUrl>
+<Url><![CDATA[url]]></Url>
+</item>
+</Articles>
+</xml>
+*/
+//从环境变量中取出数据库所要的参数
+    $host=getenv('SAE_MYSQL_HOST_M');
+    $port=getenv('SAE_MYSQL_PORT');
+    $user=getenv('SAE_MYSQL_USER');
+    $pwd=getenv('SAE_MYSQL_PASS');
+/***配置数据库名称，全局名MYSQLNAME或者$dbname ***/
+ define("MYSQLNAME", "app_lttest");
+ $dbname='app_lawlietfans';
+//定义好的参数
+/*接着调用mysql_connect()连接服务器,可以用上面赋值之后的host、port、user、pwd来替代这里的参数*/
+$link = mysql_connect(SAE_MYSQL_HOST_M.':'.SAE_MYSQL_PORT,SAE_MYSQL_USER,SAE_MYSQL_PASS);
+if(!$link) {
+      die("Connect Server Failed: " . mysql_error());
+    }
+/*连接成功后立即调用mysql_select_db()选中需要连接的数据库*/
+if(!mysql_select_db($dbname,$link)) {
+      die("Select Database Failed: " . mysql_error($link));
+    }
+/*至此连接已完全建立，就可对当前数据库进行相应的操作了*/
+    /*！！！注意，无法再通过本次连接调用mysql_select_db来切换到其它数据库了！！！*/
+    /* 需要再连接其它数据库，请再使用mysql_connect+mysql_select_db启动另一个连接*/
+     
+    /**
+    * 接下来就可以使用其它标准php mysql函数操作进行数据库操作
+    */
+		
+
+		if (strtolower($postObj->MsgType)=='text'){
+		/*$arr =array(
+					array(
+						  'title' => '金众电子欢迎您', 
+						  'description' => "点我进入金众电子官网",
+						  'picUrl' => 'http://pic.90sjimg.com/back_pic/u/00/01/53/12/55ecfb7a16ade.jpg',
+						  'url' => 'http://www.dgjinzhong.com',
+						  		),
+					array(
+						  'title' => '金众电子欢迎您', 
+						  'description' => "点我进入金众电子官网",
+						  'picUrl' => 'http://pic.90sjimg.com/back_pic/u/00/01/53/12/55ecfb7a16ade.jpg',
+						  'url' => 'http://www.dgjinzhong.com',
+						  		),
+					array(
+						  'title' => '金众电子欢迎您', 
+						  'description' => "点我进入金众电子官网",
+						  'picUrl' => 'http://pic.90sjimg.com/back_pic/u/00/01/53/12/55ecfb7a16ade.jpg',
+						  'url' => 'http://www.dgjinzhong.com',
+						  		),
+					array(
+						  'title' => '金众电子欢迎您', 
+						  'description' => "点我进入金众电子官网",
+						  'picUrl' => 'http://pic.90sjimg.com/back_pic/u/00/01/53/12/55ecfb7a16ade.jpg',
+						  'url' => 'http://www.dgjinzhong.com',
+						  		),
+
+					);*/
+
+
+				
+
+			$ch = curl_init();
+		    $url = "http://apis.baidu.com/netpopo/weather/query?city=".urlencode($postObj->Content)."&cityid=111&citycode=101260301";
+		    $header = array(
+		        'apikey: 44a4a78df33c4b66882c61a19a51b47e',
+		    );
+		    // 添加apikey到header
+		    curl_setopt($ch, CURLOPT_HTTPHEADER  , $header);
+		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		    // 执行HTTP请求
+		    curl_setopt($ch , CURLOPT_URL , $url);
+		    $res = curl_exec($ch);
+	    	
+	    	$arr=json_decode($res,true);
+	    	$content='城市:'.$arr['result']['city'].
+	    			 "\n风力:".$arr['result']['winddirect'].$arr['result']['windpower'].
+	    			 "\n天气情况:".$arr['result']['weather'].
+	    			 "\n温度:".$arr['result']['temp'].
+	    			 "\n最高温度:".$arr['result']['temphigh'].
+	    			 "\n最低温度:".$arr['result']['templow'].
+	    			 "\npm2.5指数:".$arr['result']['pm2_5'].
+	    			 "\n更新时间:".$arr['result']['updatetime'];
+	    	//4.关闭
+	    	//curl_close($ch);
+			$indexModel=new IndexModel;
+			$indexModel->responseText($postObj,$content);
+
+		}
+			else if(count($sql)){
+				/*switch (trim($postObj->Content)) {//trim()的作用是去除接收的数据中的空格
+				case 1:
+				$content="你输入的是1";
+				break;
+				
+				case 2:
+				$content="你输入的是2";
+				break;
+
+				case 3:
+				$content="你输入的是3";
+				break;
+
+				case 4:
+				$content="<a href='http://www.dgjinzhong.com'>点我进入金众电子官网</a>";
+				break;
+
+			}*/
+			$content=$sql['user_Id'];
+			$indexModel=new IndexModel;
+			$indexModel->responseText($postObj,$content);
+		}
+
+
+
+
+    
+    function http_curl(){
+    	//获取imooc
+    	//1.初始化curl
+    	$ch=curl_init();
+    	$url='http://www.dgjinzhong.com';
+    	//设置curl的参数
+    	curl_setopt($ch, CURLOPT_URL, $url);
+    	curl_setopt($url, CURLOPT_RETURNTRANSFER, true);
+    	//3.抓取、采集
+    	$output=curl_exec($ch);
+    	//4.关闭
+    	curl_close($ch);
+    	var_dump($output);
+
+    }
+
+    function getWxAccessToken(){
+    	//1.请求地址
+    	$appId='wx403c541b4f596eda';
+    	$appSecret='69c79d5688b034196e39e8d4b0fb0b27';
+    	$url="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$appId."&secret=".$appSecret;
+    	//2.初始化
+    	$ch=curl_init();
+    	//3.设置参数
+    	curl_setopt($ch, CURLOPT_URL, $url);
+    	curl_setopt($url, CURLOPT_RETURNTRANSFER, 1);
+    	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 跳过证书检查
+     	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);  // 从证书中检查SSL加密算法是否存在
+    	//3.抓取、采集
+    	$res=curl_exec($ch);
+    	
+    	//4.关闭
+    	curl_close($ch);
+    	if (curl_errno($ch)) {
+    		var_dump(curl_error($ch));
+    	}
+    	$arr=json_decode($res,true);
+    	var_dump($arr);
+    }
+    function getWxServerIP(){
+    	$accessToken="SOJngmReLrY5dHdVpEImX2qnpROvtQp-32z-wHUNihrm1INiF74oeBOiGvSBQau6wq-KxvDq-ytaAeWzz-M_T5fmsZKPNQbj76Km7EGciZYJFOfAHADZI";
+    	$url="https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=".$accessToken;
+    	$ch=curl_init();
+    	curl_setopt($ch, CURLOPT_URL, $url);
+    	curl_setopt($url, CURLOPT_RETURNTRANSFER, 1);
+    	$res=curl_exec($ch);
+    	curl_close($ch);
+    	if (curl_errno($ch)) {
+    		var_dump(curl_error($ch));
+    	}
+    	$arr=json_decode($res,true);
+    	echo "<pre>";
+    	var_dump($arr);
+    	echo "</pre>";
+    }
+}

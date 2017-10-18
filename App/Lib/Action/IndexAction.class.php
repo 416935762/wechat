@@ -226,69 +226,69 @@ public function getWxAccessToken(){
             return json_decode($output,true);
             }
 
-    }
+     }
 
 
-    public function defineItem(){
+    // public function defineItem(){
         //自定义菜单curl
-        $access_token=$this->getWxAccessToken();
-        $url="https://api.weixin.qq.com/cgi-bin/menu/create?access_token=".$access_token;
-        $postArr =array(
-            'button'=>array(
-                    array('name'=>'商业合作',
-                          'type'=>'click',
-                          'key'=>'WE',
-                        ),
-                    array(
-                            'name'=>'加入我们',
-                         	'sub_button'=>array(
-                            //二级菜单
-                                array(
-                                		'name'=>'岗位需求',
-                                		'type'=>'click',
-                                		'key'=>'item1',
-                                	),
-                                array(
-                                		'name'=>'培训通知',
-                                		'type'=>'click',
-                                		'key'=>'item2',
-                                	),
-                                array(
-                                		'name'=>'电脑小技巧',
-                                		'type'=>'click',
-                                		'key'=>'item3',
-                                	),
-/*                                array(
-                                		'name'=>'岗位需求',
-                                		'type'=>'click',
-                                		'key'=>'item1',
-                                	),
-                                array(
-                                		'name'=>'岗位需求',
-                                		'type'=>'click',
-                                		'key'=>'item1',
-                                	),*/
-                            ),
-                        ),
-                    array(
-                            'name'=>'精彩金众',
-                          'sub_button'=>array(
-                            //二级菜单
-                                array(
-                                		'name'=>'活动留影',
-                                		'type'=>'click',
-                                		'key'=>'team1',
-                                	),
-                                array(),
-                                array(),
-                                array(),
-                                array(),
-                            ),
-                        )，
-                ),
-            );
-        $postJson=json_encode($postArr);
-        $this->http_curl($url,'post','json',$postJson);
-    }//getWxAccessToken end
+    //     $access_token=$this->getWxAccessToken();
+    //     $url="https://api.weixin.qq.com/cgi-bin/menu/create?access_token=".$access_token;
+    //     $postArr =array(
+    //         'button'=>array(
+    //                 array('name'=>'商业合作',
+    //                       'type'=>'click',
+    //                       'key'=>'WE',
+    //                     ),
+    //                 array(
+    //                         'name'=>'加入我们',
+    //                      	'sub_button'=>array(
+    //                         //二级菜单
+    //                             array(
+    //                             		'name'=>'岗位需求',
+    //                             		'type'=>'click',
+    //                             		'key'=>'item1',
+    //                             	),
+    //                             array(
+    //                             		'name'=>'培训通知',
+    //                             		'type'=>'click',
+    //                             		'key'=>'item2',
+    //                             	),
+    //                             array(
+    //                             		'name'=>'电脑小技巧',
+    //                             		'type'=>'click',
+    //                             		'key'=>'item3',
+    //                             	),
+    //                             array(
+    //                             		'name'=>'岗位需求',
+    //                             		'type'=>'click',
+    //                             		'key'=>'item1',
+    //                             	),
+    //                             array(
+    //                             		'name'=>'岗位需求',
+    //                             		'type'=>'click',
+    //                             		'key'=>'item1',
+    //                             	),
+    //                         ),
+    //                     ),
+    //                 array(
+    //                         'name'=>'精彩金众',
+    //                       'sub_button'=>array(
+    //                         //二级菜单
+    //                             array(
+    //                             		'name'=>'活动留影',
+    //                             		'type'=>'click',
+    //                             		'key'=>'team1',
+    //                             	),
+    //                             array(),
+    //                             array(),
+    //                             array(),
+    //                             array(),
+    //                         ),
+    //                     )，
+    //             ),
+    //         );
+    //     $postJson=json_encode($postArr);
+    //     $this->http_curl($url,'post','json',$postJson);
+    // }//getWxAccessToken end
 
 }//class end
